@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.101"
+clap = { version = "4.0", features = ["derive"] }
+tracing = "0.1.44"
+
+[dev-dependencies]
+tracing-subscriber = "0.3.22"
