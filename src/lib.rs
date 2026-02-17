@@ -1,5 +1,7 @@
-use std::path::{PathBuf, Path};
 use clap::Parser;
+use std::path::{Path, PathBuf};
+
+mod parser;
 
 #[derive(Default)]
 pub struct Builder {
@@ -39,62 +41,61 @@ impl Builder {
             informational_message_override: self.informational_message_override,
             image_link: self.image_link,
             image_link_dir: self.image_link_dir,
-			default_compile_dir: None,
+            default_compile_dir: None,
         }
     }
 }
 
-
 #[derive(Parser, Clone, Debug)]
 pub struct MarkDownCompiler {
-	#[arg(long)]
+    #[arg(long)]
     /// Include a small information blurb at the end of generated HTML
     informational_message: bool,
 
-	#[arg(long)]
+    #[arg(long)]
     /// Optional informational message override
     informational_message_override: Option<String>,
 
-	#[arg(long)]
+    #[arg(long)]
     /// Tries to link images without an URL to images
     image_link: bool,
 
-	#[arg(long)]
+    #[arg(long)]
     /// If linking images, supply optional directory.
     image_link_dir: Option<PathBuf>,
 
-	#[arg(long)]
+    #[arg(long)]
     /// Default directory to compile. Used for CLI
     default_compile_dir: Option<PathBuf>,
 }
 
 impl MarkDownCompiler {
-	pub fn builder() -> Builder {
-		Builder::default()
-	}
+    pub fn builder() -> Builder {
+        Builder::default()
+    }
 
-	pub fn set_default_compile_dir(&mut self, path: PathBuf) -> &mut Self {
-		self.default_compile_dir = Some(path);
-		self
-	}
+    pub fn set_default_compile_dir(&mut self, path: PathBuf) -> &mut Self {
+        self.default_compile_dir = Some(path);
+        self
+    }
 
-	pub fn get_default_compiler_dir<'a>(&'a self) -> Option<&'a PathBuf> {
-		self.default_compile_dir.as_ref()
-	}
+    pub fn get_default_compiler_dir<'a>(&'a self) -> Option<&'a PathBuf> {
+        self.default_compile_dir.as_ref()
+    }
 
-	pub fn compile_default(self) -> anyhow::Result<()> {
-		if self.default_compile_dir.is_none() {
-			return Err(anyhow::anyhow!("No default directory provided to compile"));
-		}
+    pub fn compile_default(self) -> anyhow::Result<()> {
+        if self.default_compile_dir.is_none() {
+            return Err(anyhow::anyhow!("No default directory provided to compile"));
+        }
 
         let path = self.default_compile_dir.clone().unwrap();
         self.compile(&path)?;
 
-		Ok(())
-	}
+        Ok(())
+    }
 
     pub fn compile(self, directory: &Path) -> anyhow::Result<()> {
-		tracing::info!("Compiling to html in {}", directory.display());
-		Ok(())
-	}
+        tracing::info!("Compiling to html in {}", directory.display());
+        Ok(())
+    }
 }
